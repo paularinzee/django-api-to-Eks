@@ -40,11 +40,11 @@ jobs:
       # - setup_remote_docker:
       #     docker_layer_caching: false
       - run:
-        name: Build backend image
-        command: |
-          docker build -t djangoBackend -t paularinze/djangoBackend:latest .
-          # echo $DOCKER_PASSWORD | docker login -u paularinze --password-stdin
-          # docker push paularinze/djangoBackend:latest
+          name: Build backend image
+          command: |
+            docker build -t djangoBackend -t paularinze/djangoBackend:latest .
+            echo $DOCKER_PASSWORD | docker login -u paularinze --password-stdin
+            docker push paularinze/djangoBackend:latest
 
   # plan-apply:
   #   working_directory: /tmp/project
