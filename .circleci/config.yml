@@ -90,8 +90,9 @@ workflows:
   the_jobs:
     jobs:
       - test-backend
-      - build-backend-image:
-          requires: [test-backend]
+      - build-backend-image
+      # - build-backend-image:
+      #     requires: [test-backend]
       # - plan-apply
       # - hold-apply:
       #     type: approval
