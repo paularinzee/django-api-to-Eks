@@ -31,19 +31,19 @@ jobs:
           command: |
             python manage.py test
 
-  # build-backend-image:
-  #   docker:
-  #     - imag: cimg/python:3.10.1
-  #   steps:
-  #     - checkout
-  #     - setup_remote_docker:
-  #       docker_layer_caching: false
-  #     - run:
-  #       name: Build backend image
-  #       command: |
-  #         docker build -t djangoBackend -t paularinze/djangoBackend:latest .
-  #         echo $DOCKER_PASSWORD | docker login -u paularinze --password-stdin
-  #         docker push paularinze/djangoBackend:latest
+  build-backend-image:
+    docker:
+      - imag: cimg/python:3.10.1
+    steps:
+      - checkout
+      - setup_remote_docker:
+        docker_layer_caching: false
+      - run:
+        name: Build backend image
+        command: |
+          docker build -t djangoBackend -t paularinze/djangoBackend:latest .
+          echo $DOCKER_PASSWORD | docker login -u paularinze --password-stdin
+          docker push paularinze/djangoBackend:latest
 
   # plan-apply:
   #   working_directory: /tmp/project
@@ -90,12 +90,9 @@ workflows:
   the_jobs:
     jobs:
       - test-backend
-      # - bulid-frontend_image
-      #     requires:
-      #       - test-frontend
-      # - build-backend-image 
-      #     requires:
-      #       - test-backend
+      - build-backend-image 
+          requires:
+            - test-backend
       # - plan-apply
       # - hold-apply:
       #     type: approval
