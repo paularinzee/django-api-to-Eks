@@ -42,9 +42,9 @@ jobs:
       - run:
           name: Build backend image
           command: |
-            docker build -t paularinze/djangoBackend:latest .
+            docker build -t paularinze/djangobackend:latest .
             echo $DOCKER_PASSWORD | docker login -u paularinze --password-stdin
-            docker push paularinze/djangoBackend:latest
+            docker push paularinze/djangobackend:latest
 
   # plan-apply:
   #   working_directory: /tmp/project
