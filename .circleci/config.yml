@@ -30,6 +30,7 @@ jobs:
           name: run tests
           command: |
             python manage.py test
+            
 
   build-backend-image:
     docker:
@@ -42,8 +43,8 @@ jobs:
         name: Build backend image
         command: |
           docker build -t djangoBackend -t paularinze/djangoBackend:latest .
-          echo $DOCKER_PASSWORD | docker login -u paularinze --password-stdin
-          docker push paularinze/djangoBackend:latest
+          # echo $DOCKER_PASSWORD | docker login -u paularinze --password-stdin
+          # docker push paularinze/djangoBackend:latest
 
   # plan-apply:
   #   working_directory: /tmp/project
@@ -90,9 +91,8 @@ workflows:
   the_jobs:
     jobs:
       - test-backend
-      - build-backend-image
-      # - build-backend-image:
-      #     requires: [test-backend]
+      - build-backend-image:
+          requires: [test-backend]
       # - plan-apply
       # - hold-apply:
       #     type: approval
