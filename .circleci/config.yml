@@ -1,5 +1,5 @@
 version: 2.1
- commands:
+commands:
   # install-kubectl:
   #   description: install kubectl
   #   steps:
