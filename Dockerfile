@@ -15,10 +15,5 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Expose port
-EXPOSE 8000
-
-# entrypoint to run the django.sh file
-# ENTRYPOINT ["/django.sh"]
-# COPY ./django.sh /django.sh
-# RUN chmod o+x /django.sh
-# ENTRYPOINT ["sh", "-c", "/django.sh"]
+# EXPOSE 8000
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
