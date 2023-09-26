@@ -71,7 +71,7 @@ workflows:
       - test-app
       - build-and-push-image:
           requires: [test-app]
-      - deploy
+      - deploy:
           requires: [build-and-push-image]
       #      - bulid-frontend_image
       #      - build-backend-image
