@@ -1,5 +1,6 @@
 version: 2.1
-
+orbs:
+  sam: circleci/aws-sam-serverless@3.1.0
 commands:
   install-kubectl:
     description: install kubectl
@@ -13,11 +14,11 @@ commands:
                   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
                   kubectl version --client
           
-                  # curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-                  # mv /tmp/eksctl /usr/local/bin
-                  # eksctl version
+                  curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+                  mv /tmp/eksctl /usr/local/bin
+                  eksctl version
 jobs:
-  test-backend:
+  test-app:
     docker:
       - image: cimg/python:3.10.1
     steps:
@@ -32,7 +33,7 @@ jobs:
             python manage.py test
             
 
-  build-backend-image:
+  build-and-push-image:
     docker:
       - image: cimg/python:3.10.1
     steps:
@@ -42,68 +43,36 @@ jobs:
       - run:
           name: Build backend image
           command: |
-            docker build -t paularinze/djangobackend:latest .
+            docker build -t paularinze/django-backend:latest .
             echo $DOCKER_PASSWORD | docker login -u paularinze --password-stdin
-            docker push paularinze/djangobackend:latest
-
-  # plan-apply:
-  #   working_directory: /tmp/project
-  #   docker:
-  #     - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: terraform init & plan
-  #         command: |
-  #           terraform init -input=false
-  #           terraform plan -out tfapply -var-file terraform.tfvars
-  #     - persist_to_workspace:
-  #         root: .
-  #         paths:
-  #           - .
-  # apply:
-  #   docker:
-  #     - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-  #   steps:
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: terraform
-  #         command: |
-  #           terraform apply -auto-approve tfapply
-  #     - persist_to_workspace:
-  #         root: .
-  #         paths:
-  #           - .
-# deploy:
-#     docker:
-#       - image: amazon/aws-cli
-#     steps:
-#       - checkout
-#       - install-kubectl
-#       - run:
-#           name: Deploying version_1
-#           command: |
-#               kubectl apply -f deployment.yml
-#               kubectl apply -f service.yml
-#       - destroy-cluster
+            docker push paularinze/django-backend:v1
+deploy:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - install-kubectl-and-eksctl
+      - run:
+          name: Creating K8S cluster
+          command: |
+                  echo
+                  # kubectl get nodes -o wide
+                  # kubectl create namespace node-namespace
+                  aws eks update-kubeconfig --name Student-App --region us-east-1
+      - run:
+          name: Deploying version_1
+          command: |
+              kubectl apply -f deployment.yml
+              kubectl apply -f service.yml
+      
 workflows:
   the_jobs:
     jobs:
-      - test-backend
-      - build-backend-image:
-          requires: [test-backend]
-      # - plan-apply
-      # - hold-apply:
-      #     type: approval
-      #     requires:
-      #       - plan-apply
-      # - apply:
-      #     requires:
-      #       - hold-apply
-
-      # # - deploy
-      #     requires:
+      - test-app
+      - build-and-push-image:
+          requires: [test-app]
+      - deploy
+          requires: [build-and-push-image]
       #      - bulid-frontend_image
       #      - build-backend-image
       #      - hold-apply

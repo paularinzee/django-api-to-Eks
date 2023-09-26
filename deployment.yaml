@@ -1,19 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: django-backend
 spec:
   selector:
     matchLabels:
-      app: backend
+      app: django-backend
   replicas: 2
   template:
     metadata:
       labels:
-        app: backend
+        app: django-backend
     spec:
       containers:
       - name: backend
-        image: paularinze/todo-app:build-25
+        image: paularinze/django-backend:v1
+        imagPullPolcicy: Always
         ports:
         - containerPort: 80
