@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: django-backend
+  namespace: django-namespace
+  labels:
+    app: django-backend
 spec:
   selector:
     matchLabels:
@@ -13,8 +16,9 @@ spec:
         app: django-backend
     spec:
       containers:
-      - name: backend
+      - name: django-backend
         image: paularinze/django-backend:v1
-        imagPullPolcicy: Always
+        imagePullPolicy: Always
         ports:
-        - containerPort: 80
+        - containerPort: 8000
+      
