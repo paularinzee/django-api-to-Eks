@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: django-backend
-  namespace: django-namespace
+  # namespace: django-namespace
   labels:
     app: django-backend
 spec:
