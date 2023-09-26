@@ -46,7 +46,7 @@ jobs:
             docker build -t paularinze/django-backend:latest .
             echo $DOCKER_PASSWORD | docker login -u paularinze --password-stdin
             docker push paularinze/django-backend:v1
-deploy:
+  deploy:
     docker:
       - image: amazon/aws-cli
     steps:
