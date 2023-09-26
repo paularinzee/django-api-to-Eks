@@ -43,9 +43,9 @@ jobs:
       - run:
           name: Build backend image
           command: |
-            docker build -t paularinze/django-backend:v2 .
+            docker build -t paularinze/django-backend:v3 .
             echo $DOCKER_PASSWORD | docker login -u paularinze --password-stdin
-            docker push paularinze/django-backend:v2
+            docker push paularinze/django-backend:v3
   deploy:
     docker:
       - image: amazon/aws-cli
@@ -58,7 +58,7 @@ jobs:
                   echo
                   # kubectl get nodes -o wide
                   # kubectl create namespace node-namespace
-                  aws eks update-kubeconfig --name student-App --region us-east-2
+                  aws eks update-kubeconfig --name student-app --region us-east-2
       - run:
           name: Deploying version_1
           command: |
