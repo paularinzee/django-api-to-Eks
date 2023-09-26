@@ -51,7 +51,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - install-kubectl-and-eksctl
+      - install-kubectl
       - run:
           name: Creating K8S cluster
           command: |
